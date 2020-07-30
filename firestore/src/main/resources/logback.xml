@@ -1,0 +1,80 @@
+<!--
+  This config file is for use with logback as a logging backend to SLF4J.
+
+  in order to properly configure java.util.logging loggers add the following to
+  the to of the class you are "running"
+
+  ```
+  static {
+    SLF4JBridgeHandler.removeHandlersForRootLogger();
+    SLF4JBridgeHandler.install();
+  }
+  ```
+
+  Note, the above is not zero-overhead, so should only be used in a dev environment
+
+-->
+<configuration scan="true" scanPeriod="30 seconds">
+  <!-- setup: http://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html -->
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-5.5r %-5.5level [%-5.5thread] %-36.36logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="NOEXCEPTION" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-5.5r %-5.5level [%-5.5thread] %-36.36logger{36} - %msg%nopex%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Suppress noisy logging from inaccessible metadata endpoint -->
+  <logger name="com.google.auth.oauth2.ComputeEngineCredentials" level="info"/>
+  <!-- opencensus is not super useful at debug logging for me -->
+  <logger name="io.opencensus" level="info"/>
+
+  <!-- http transport logging -->
+  <logger name="sun.net.www.protocol.http.HttpURLConnection" level="warn"/>
+  <logger name="com.google.api.client.http.HttpTransport" level="warn"/>
+
+  <!-- grpc transport logging -->
+  <logger name="io.grpc.ChannelLogger" level="info"/>
+  <!-- send the logging for Context to the NOEXCEPTION appender, since it logs stack traces along with warning messages -->
+  <logger name="io.grpc.Context" level="debug" additivity="false">
+    <appender-ref ref="NOEXCEPTION"/>
+  </logger>
+  <logger name="io.grpc.LoadBalancerRegistry" level="warn"/>
+  <logger name="io.grpc.NameResolverRegistry" level="warn"/>
+  <!-- send the logging for GrpclbNameResolver to the NOEXCEPTION appender, since it logs stack traces along with warning messages -->
+  <logger name="io.grpc.grpclb.GrpclbNameResolver" level="debug" additivity="false">
+    <appender-ref ref="NOEXCEPTION"/>
+  </logger>
+  <logger name="io.grpc.internal.AbstractManagedChannelImplBuilder" level="warn"/>
+  <logger name="io.grpc.internal.DnsNameResolver" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.grpc.netty.ProtocolNegotiators" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.buffer" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.channel.DefaultChannelId" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.channel.MultithreadEventLoopGroup" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.handler.ssl" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.NetUtil" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.Recycler" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.ResourceLeakDetector" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.ResourceLeakDetectorFactory" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.internal.CleanerJava6" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.internal.InternalThreadLocalMap" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.internal.NativeLibraryLoader" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent" level="warn"/>
+  <logger name="io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent0" level="warn"/>
+  <logger name="io.perfmark.PerfMark" level="warn"/>
+
+  <!-- Actual logging for stream information (most important for looking at headers) -->
+  <logger name="io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler" level="debug"/>
+
+  <root level="trace">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>

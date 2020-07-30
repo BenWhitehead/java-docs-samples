@@ -40,6 +40,9 @@
     <!-- Define a default empty value property which can be overridden on the command line if
          necessary by passing `-Dfirestore.project.id="some-id"` when running maven exec -->
     <firestore.project.id/>
+    <version.logback-classic>1.2.3</version.logback-classic>
+    <version.slf4j>1.7.30</version.slf4j>
+
   </properties>
 
   <!-- [START fs-maven] -->
@@ -63,6 +66,33 @@
       <artifactId>google-cloud-firestore</artifactId>
     </dependency>
     <!-- [END fs-maven] -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${version.logback-classic}</version>
+    </dependency>
+
 
     <!-- Test dependencies -->
     <dependency>
@@ -90,7 +120,7 @@
         <configuration>
           <executable>java</executable>
           <arguments>
-            <argument>-classpath</argument>
+            <argumentc>-classpath</argumentc>
             <classpath/>
             <argument>com.example.firestore.Quickstart</argument>
             <argument>${firestore.project.id}</argument>

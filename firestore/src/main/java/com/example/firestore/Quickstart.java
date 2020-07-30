@@ -19,10 +19,8 @@ package com.example.firestore;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
-// [START fs_include_dependencies]
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-// [END fs_include_dependencies]
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
@@ -30,12 +28,20 @@ import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  * A simple Quick start application demonstrating how to connect to Firestore
  * and add and query documents.
  */
 public class Quickstart {
+  static {
+    SLF4JBridgeHandler.removeHandlersForRootLogger();
+    SLF4JBridgeHandler.install();
+  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(Quickstart.class);
 
   private Firestore db;
 
@@ -44,9 +50,21 @@ public class Quickstart {
    */
   public Quickstart() {
     // [START fs_initialize]
-    Firestore db = FirestoreOptions.getDefaultInstance().getService();
+    final FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance();
+    logOptions(firestoreOptions);
+    Firestore db = firestoreOptions.getService();
     // [END fs_initialize]
     this.db = db;
+  }
+
+  private void logOptions(FirestoreOptions firestoreOptions) {
+    LOGGER.debug("firestoreOptions.getApplicationName() = {}", firestoreOptions.getApplicationName());
+    LOGGER.debug("firestoreOptions.getDatabaseId() = {}", firestoreOptions.getDatabaseId());
+    LOGGER.debug("firestoreOptions.getHost() = {}", firestoreOptions.getHost());
+    LOGGER.debug("firestoreOptions.getLibraryVersion() = {}", firestoreOptions.getLibraryVersion());
+    LOGGER.debug("firestoreOptions.getProjectId() = {}", firestoreOptions.getProjectId());
+    LOGGER.debug("firestoreOptions.getQuotaProjectId() = {}", firestoreOptions.getQuotaProjectId());
+    LOGGER.debug("firestoreOptions.getUserAgent() = {}", firestoreOptions.getUserAgent());
   }
 
   public Quickstart(String projectId) throws Exception {
@@ -56,6 +74,7 @@ public class Quickstart {
             .setProjectId(projectId)
             .setCredentials(GoogleCredentials.getApplicationDefault())
             .build();
+    logOptions(firestoreOptions);
     Firestore db = firestoreOptions.getService();
     // [END fs_initialize_project_id]
     this.db = db;
@@ -191,6 +210,7 @@ public class Quickstart {
    * @param args firestore-project-id (optional)
    */
   public static void main(String[] args) throws Exception {
+    LOGGER.debug("args = {}", args);
     // default project is will be used if project-id argument is not available
     String projectId = (args.length == 0) ? null : args[0];
     Quickstart quickStart = (projectId != null) ? new Quickstart(projectId) : new Quickstart();
