@@ -33,6 +33,7 @@
 
   <!-- Suppress noisy logging from inaccessible metadata endpoint -->
   <logger name="com.google.auth.oauth2.ComputeEngineCredentials" level="info"/>
+  <logger name="jdk.event.security" level="info"/>
   <!-- opencensus is not super useful at debug logging for me -->
   <logger name="io.opencensus" level="info"/>
 
